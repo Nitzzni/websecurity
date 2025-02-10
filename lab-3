@@ -1,0 +1,91 @@
+document.addEventListener("DOMContentLoaded", () => {
+  console.log("Current URL:", window.location.href);
+  const queryParams = new URLSearchParams(window.location.search);
+  queryParams.forEach((value, key) => {
+    console.log(`Query Parameter - ${key}: ${value}`);
+  });
+});
+
+// Log hostname, protocol, and pathname
+console.log("Hostname:", window.location.hostname);
+console.log("Protocol:", window.location.protocol);
+console.log("Pathname:", window.location.pathname);
+
+// Redirect to a trusted domain
+const trustedDomains = ["example.com", "trustedsite.org"];
+function redirectIfTrusted(url) {
+  try {
+    const { hostname } = new URL(url);
+    if (trustedDomains.includes(hostname)) {
+      window.location.href = url;
+    } else {
+      console.warn("Redirect blocked: Untrusted domain");
+    }
+  } catch (error) {
+    console.error("Invalid URL:", error);
+  }
+}
+
+// Log pages visited in the session
+console.log("Pages visited in the session:", window.history.length);
+
+// Display user agent and browser identification
+console.log("User Agent:", navigator.userAgent);
+if (/Chrome/.test(navigator.userAgent)) {
+  console.log("Browser: Google Chrome");
+} else if (/Firefox/.test(navigator.userAgent)) {
+  console.log("Browser: Mozilla Firefox");
+} else {
+  console.log("Browser not identified");
+}
+
+// Log screen width and height
+console.log("Screen Width:", screen.width);
+console.log("Screen Height:", screen.height);
+
+// Prevent unwanted popups
+function safePopup(url) {
+  if (trustedDomains.some(domain => url.includes(domain))) {
+    window.open(url, "popup", "width=400,height=400");
+  } else {
+    console.warn("Popup blocked: Untrusted domain");
+  }
+}
+
+// Log domain and origin
+console.log("Domain:", location.hostname);
+console.log("Origin:", location.origin);
+
+// Session timeout warning
+let timeout;
+function resetTimeout() {
+  clearTimeout(timeout);
+  timeout = setTimeout(() => {
+    alert("Session timed out due to inactivity.");
+  }, 10000);
+}
+window.addEventListener("mousemove", resetTimeout);
+window.addEventListener("keydown", resetTimeout);
+resetTimeout();
+
+// Warn if connection is insecure
+if (location.protocol !== "https:") {
+  alert("This page is not secure. Avoid entering sensitive information.");
+}
+
+// Safe scrolling functions
+function scrollToTop() {
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+function scrollToElement(elementId) {
+  const element = document.getElementById(elementId);
+  if (element) {
+    element.scrollIntoView({ behavior: "smooth" });
+  }
+}
+
+// Secure title modification
+console.log("Current Title:", document.title);
+if (!document.title.includes("Secure")) {
+  document.title = "Secure - " + document.title;
+}
